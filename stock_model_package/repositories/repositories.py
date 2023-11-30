@@ -14,7 +14,7 @@ class BaseRepository(Generic[T]):
         self.id_attr = id_attr
 
     def get_by_id(self, id_value: int) -> Optional[T]:
-        return self.session.query(self.model).filter(getattr(self.model, self.id_attr) == id_value).one_or_none()
+        return self.session.query(self.model).filter(getattr(self.model, self.id_attr) == id_value)
 
 
 class StockRepository(BaseRepository[Stock]):
