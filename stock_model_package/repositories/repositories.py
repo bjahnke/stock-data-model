@@ -1,6 +1,8 @@
+from sqlalchemy import create_engine
+
 from stock_model_package.models import Stock, StockData, TimestampData, Regime, FloorCeiling, Peak
 from typing import Type, Generic, Optional, TypeVar
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -56,6 +58,12 @@ class StockDbFacade:
         self._regime_repo = RegimeRepository(session)
         self._floor_ceiling_repo = FloorCeilingRepository(session)
         self._peak_repo = PeakRepository(session)
+
+    @classmethod
+    def from_url(cls, url: str):
+        engine = create_engine(url)
+        session_factory = sessionmaker(bind=engine)
+        return cls(session_factory())
 
     @property
     def stock(self):
