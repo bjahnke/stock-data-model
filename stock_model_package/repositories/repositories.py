@@ -1,3 +1,12 @@
+from stock_model_package.models import Stock, StockData, TimestampData, Regime, FloorCeiling, Peak
+from typing import Type, Generic, Optional, TypeVar
+from sqlalchemy.orm import Session
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+T = TypeVar('T', bound=Base)
+
+
 class BaseRepository(Generic[T]):
     def __init__(self, s: Session, model: Type[T], id_attr: str = 'id'):
         self.session = s
@@ -36,6 +45,42 @@ class FloorCeilingRepository(BaseRepository[FloorCeiling]):
 class PeakRepository(BaseRepository[Peak]):
     def __init__(self, session: Session):
         super().__init__(session, Peak, 'stock_id')
+
+
+class StockDbFacade:
+    def __init__(self, session: Session):
+        self._session = session
+        self._stock_repo = StockRepository(session)
+        self._stock_data_repo = StockDataRepository(session)
+        self._timestamp_data_repo = TimestampDataRepository(session)
+        self._regime_repo = RegimeRepository(session)
+        self._floor_ceiling_repo = FloorCeilingRepository(session)
+        self._peak_repo = PeakRepository(session)
+
+    @property
+    def stock(self):
+        return self._stock_repo
+
+    @property
+    def stock_data(self):
+        return self._stock_data_repo
+
+    @property
+    def timestamp_data(self):
+        return self._timestamp_data_repo
+
+    @property
+    def regime(self):
+        return self._regime_repo
+
+    @property
+    def floor_ceiling(self):
+        return self._floor_ceiling_repo
+
+    @property
+    def peak(self):
+        return self._peak_repo
+
 
 # Example Usage
 if __name__ == '__main__':

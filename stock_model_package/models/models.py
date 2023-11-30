@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship, backref, Session
 from sqlalchemy.ext.declarative import declarative_base
-from typing import Type, TypeVar, Generic, Optional
+from typing import TypeVar
 
 Base = declarative_base()
 T = TypeVar('T', bound=Base)
